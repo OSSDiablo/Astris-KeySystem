@@ -47,8 +47,8 @@ local Fonts = {
 
 local SHADOW = "rbxassetid://6014261993"
 
-local function logo()
-	local data = "@@LOGO@@"
+-- writes a baked base64 png to the workspace folder and returns a custom asset id
+local function bake(data, path)
 	local ok, asset = pcall(function()
 		if not (writefile and getcustomasset) then
 			return nil
@@ -73,13 +73,25 @@ local function logo()
 		if isfolder and makefolder and not isfolder("AstrisUI") then
 			makefolder("AstrisUI")
 		end
-		local path = "AstrisUI/logo_@@LOGOVER@@.png"
 		if not (isfile and isfile(path)) then
 			writefile(path, table.concat(out))
 		end
 		return getcustomasset(path)
 	end)
 	return ok and asset or nil
+end
+
+local function logo()
+	return bake("@@LOGO@@", "AstrisUI/logo_@@LOGOVER@@.png")
+end
+
+-- soft shadow around a radius 14 rounded rect, so it follows the window corners
+local shadowSlice = Rect.new(49, 49, 450, 450)
+do
+	local id = bake("@@SHADOW@@", "AstrisUI/shadow_@@SHADOWVER@@.png")
+	if id then
+		SHADOW, shadowSlice = id, Rect.new(60, 60, 140, 140)
+	end
 end
 
 local icons
@@ -266,7 +278,7 @@ function KeySystem:Show(opts)
 		ImageColor3 = rgb(0, 0, 0),
 		ImageTransparency = 1,
 		ScaleType = Enum.ScaleType.Slice,
-		SliceCenter = Rect.new(49, 49, 450, 450),
+		SliceCenter = shadowSlice,
 		Position = UDim2.fromOffset(-25, -25),
 		Size = UDim2.new(1, 50, 1, 50),
 		Parent = root,
