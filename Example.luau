@@ -5,8 +5,8 @@ local key = KeySystem:Show({
     Subtitle = "Key system",
     Theme = "Default", -- or "Midnight", "Moss", "Ember", "Rose", "Mono", or a table of colours
 
-    Discord = "dsc.gg/astris", -- text on the card, clicking copies DiscordLink
-    DiscordLink = "https://discord.gg/astris",
+    Discord = "dsc.gg/astrishub", -- text on the card, clicking copies DiscordLink
+    DiscordLink = "https://dsc.gg/astrishub",
     Website = "astris.gg",
     WebsiteLink = "https://astris.gg",
     KeyLink = "https://astris.gg/key", -- copied by "Get a key"
