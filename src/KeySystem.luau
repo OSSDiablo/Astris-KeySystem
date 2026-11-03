@@ -5,6 +5,7 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local MarketplaceService = game:GetService("MarketplaceService")
+local RunService = game:GetService("RunService")
 
 local KeySystem = {}
 
@@ -278,50 +279,57 @@ function KeySystem:Show(opts)
 		Parent = root,
 	}, { corner(14), stroke(theme.Stroke) })
 
-	-- left: brand, key field, actions
-	local logoImg = opts.Logo or logo()
-	new("ImageLabel", {
-		BackgroundTransparency = 1,
-		Image = logoImg or "",
-		ScaleType = Enum.ScaleType.Fit,
-		Position = UDim2.fromOffset(28, 26),
+	-- brand: logo in an app-icon tile, title, subtitle
+	local tile = new("Frame", {
+		BackgroundColor3 = theme.Surface2,
+		Position = UDim2.fromOffset(28, 28),
 		Size = UDim2.fromOffset(40, 40),
 		Parent = body,
+	}, { corner(10), stroke(theme.Stroke) })
+	new("ImageLabel", {
+		BackgroundTransparency = 1,
+		Image = opts.Logo or logo() or "",
+		ScaleType = Enum.ScaleType.Fit,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(24, 24),
+		Parent = tile,
 	})
 	text({
 		Text = opts.Title or "Astris",
 		FontFace = Fonts.Bold,
-		TextSize = 22,
+		TextSize = 20,
 		TextColor3 = theme.Text,
-		Position = UDim2.fromOffset(80, 27),
-		Size = UDim2.fromOffset(240, 24),
+		Position = UDim2.fromOffset(80, 29),
+		Size = UDim2.fromOffset(240, 20),
 		Parent = body,
 	})
 	text({
 		Text = opts.Subtitle or "Key system",
 		TextSize = 13,
 		TextColor3 = theme.Muted,
-		Position = UDim2.fromOffset(80, 51),
-		Size = UDim2.fromOffset(240, 14),
+		Position = UDim2.fromOffset(80, 50),
+		Size = UDim2.fromOffset(240, 15),
 		Parent = body,
 	})
 
+	-- key field
 	text({
 		Text = "License key",
 		TextSize = 12,
 		TextColor3 = theme.Muted,
-		Position = UDim2.fromOffset(28, 100),
+		Position = UDim2.fromOffset(28, 98),
 		Size = UDim2.fromOffset(200, 14),
 		Parent = body,
 	})
 	local fieldStroke = stroke(theme.Stroke)
 	local field = new("Frame", {
 		BackgroundColor3 = theme.Surface,
-		Position = UDim2.fromOffset(28, 120),
-		Size = UDim2.fromOffset(300, 40),
+		Position = UDim2.fromOffset(28, 118),
+		Size = UDim2.fromOffset(300, 44),
 		Parent = body,
 	}, { corner(10), fieldStroke })
-	local keyIcon = iconImage("key-round", theme.Muted, 16, UDim2.fromOffset(13, 12))
+	local keyIcon = iconImage("key-round", theme.Muted, 16, UDim2.fromOffset(14, 14))
 	keyIcon.Parent = field
 	local box = new("TextBox", {
 		BackgroundTransparency = 1,
@@ -334,12 +342,12 @@ function KeySystem:Show(opts)
 		TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
-		Position = UDim2.fromOffset(40, 0),
-		Size = UDim2.new(1, -52, 1, 0),
+		Position = UDim2.fromOffset(42, 0),
+		Size = UDim2.new(1, -54, 1, 0),
 		Parent = field,
 	})
 	box.Focused:Connect(function()
-		tween(fieldStroke, 0.2, { Color = theme.Accent, Transparency = 0.4 })
+		tween(fieldStroke, 0.2, { Color = theme.Accent, Transparency = 0.35 })
 		tween(keyIcon, 0.2, { ImageColor3 = theme.Accent })
 	end)
 	box.FocusLost:Connect(function()
@@ -347,54 +355,94 @@ function KeySystem:Show(opts)
 		tween(keyIcon, 0.2, { ImageColor3 = theme.Muted })
 	end)
 
+	-- buttons: icon and label centred together
 	local function button(label, iconName, x, primary)
-		local s = stroke(primary and theme.Accent or theme.Stroke, primary and 0.6 or 0)
+		local idle = primary and theme.Accent or theme.Surface2
+		local s = stroke(primary and theme.Accent or theme.Stroke, primary and 0.5 or 0)
 		local b = new("TextButton", {
 			AutoButtonColor = false,
+			Text = "",
+			BackgroundColor3 = idle,
+			Position = UDim2.fromOffset(x, 174),
+			Size = UDim2.fromOffset(146, 40),
+			Parent = body,
+		}, { corner(10), s })
+		local color = primary and theme.AccentDark or theme.Text
+		local row = new("Frame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Parent = b }, {
+			new("UIListLayout", {
+				FillDirection = Enum.FillDirection.Horizontal,
+				HorizontalAlignment = Enum.HorizontalAlignment.Center,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+				Padding = UDim.new(0, 8),
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			}),
+		})
+		local ic = iconImage(iconName, color, 16)
+		ic.Parent = row
+		local t = text({
 			Text = label,
 			FontFace = Fonts.Bold,
 			TextSize = 14,
-			TextColor3 = primary and theme.AccentDark or theme.Text,
-			BackgroundColor3 = primary and theme.Accent or theme.Surface2,
-			Position = UDim2.fromOffset(x, 176),
-			Size = UDim2.fromOffset(144, 38),
-			Parent = body,
-		}, { corner(10), s, new("UIPadding", { PaddingLeft = UDim.new(0, 24) }) })
-		local ic = iconImage(iconName, b.TextColor3, 16, UDim2.fromOffset(-12, 11))
-		ic.Parent = b
+			TextColor3 = color,
+			AutomaticSize = Enum.AutomaticSize.X,
+			Size = UDim2.fromOffset(0, 16),
+			LayoutOrder = 1,
+			Parent = row,
+		})
 		b.MouseEnter:Connect(function()
 			if primary then
-				tween(b, 0.15, { BackgroundTransparency = 0.12 })
+				tween(b, 0.15, { BackgroundTransparency = 0.1 })
 			else
 				tween(b, 0.15, { BackgroundColor3 = theme.Surface3 })
 				tween(s, 0.15, { Color = theme.StrokeHover })
 			end
 		end)
 		b.MouseLeave:Connect(function()
-			tween(b, 0.15, { BackgroundTransparency = 0, BackgroundColor3 = primary and theme.Accent or theme.Surface2 })
+			tween(b, 0.15, { BackgroundTransparency = 0, BackgroundColor3 = idle })
 			tween(s, 0.15, { Color = primary and theme.Accent or theme.Stroke })
 		end)
-		return b
+		b.MouseButton1Down:Connect(function()
+			tween(b, 0.1, { Size = UDim2.fromOffset(142, 38), Position = UDim2.fromOffset(x + 2, 175) })
+		end)
+		b.MouseButton1Up:Connect(function()
+			tween(b, 0.15, { Size = UDim2.fromOffset(146, 40), Position = UDim2.fromOffset(x, 174) })
+		end)
+		return b, ic, t
 	end
-	local submit = button("Submit", "arrow-right", 28, true)
-	local getKey = button("Get a key", "globe", 184, false)
+	local submit, submitIcon, submitText = button("Submit", "arrow-right", 28, true)
+	local getKey = button("Get a key", "globe", 182, false)
 
-	local message = text({
-		Text = "",
-		TextSize = 13,
-		TextColor3 = theme.Muted,
-		Position = UDim2.fromOffset(28, 232),
+	-- feedback line under the buttons
+	local message = new("Frame", {
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(28, 230),
 		Size = UDim2.fromOffset(300, 16),
 		Parent = body,
 	})
-	text({
-		Text = saving and "Your key is saved, you only enter it once" or "",
-		TextSize = 12,
+	local messageIcon = iconImage("circle-alert", theme.Muted, 14, UDim2.fromOffset(0, 1))
+	messageIcon.ImageTransparency = 1
+	messageIcon.Parent = message
+	local messageText = text({
+		Text = "",
+		TextSize = 13,
 		TextColor3 = theme.Muted,
-		Position = UDim2.fromOffset(28, 296),
-		Size = UDim2.fromOffset(300, 14),
-		Parent = body,
+		TextTransparency = 1,
+		Position = UDim2.fromOffset(20, 0),
+		Size = UDim2.fromOffset(280, 16),
+		Parent = message,
 	})
+
+	if saving then
+		iconImage("shield-check", theme.Muted, 14, UDim2.fromOffset(28, 297)).Parent = body
+		text({
+			Text = "Your key is saved, you only enter it once",
+			TextSize = 12,
+			TextColor3 = theme.Muted,
+			Position = UDim2.fromOffset(48, 297),
+			Size = UDim2.fromOffset(280, 14),
+			Parent = body,
+		})
+	end
 
 	-- right: inset info panel
 	local panel = new("Frame", {
@@ -403,35 +451,36 @@ function KeySystem:Show(opts)
 		Size = UDim2.fromOffset(232, 324),
 		Parent = body,
 	}, { corner(10), stroke(theme.Stroke) })
-	local px = 22
+	local px, pw = 20, 192
 
 	text({
 		Text = "Detected game",
 		TextSize = 12,
 		TextColor3 = theme.Muted,
-		Position = UDim2.fromOffset(px, 22),
-		Size = UDim2.fromOffset(188, 14),
+		Position = UDim2.fromOffset(px, 20),
+		Size = UDim2.fromOffset(pw, 14),
 		Parent = panel,
 	})
 	local card = new("Frame", {
 		BackgroundColor3 = theme.Surface2,
-		Position = UDim2.fromOffset(px, 42),
-		Size = UDim2.fromOffset(188, 60),
+		Position = UDim2.fromOffset(px, 40),
+		Size = UDim2.fromOffset(pw, 60),
 		Parent = panel,
 	}, { corner(10), stroke(theme.Stroke) })
 	new("ImageLabel", {
 		BackgroundColor3 = theme.Surface3,
 		Image = "rbxthumb://type=GameIcon&id=" .. game.GameId .. "&w=150&h=150",
-		Position = UDim2.fromOffset(11, 11),
-		Size = UDim2.fromOffset(38, 38),
+		Position = UDim2.fromOffset(10, 10),
+		Size = UDim2.fromOffset(40, 40),
 		Parent = card,
 	}, { corner(8), stroke(theme.Stroke) })
 	local gameName = text({
 		Text = "Loading...",
+		FontFace = Fonts.Bold,
 		TextSize = 13,
 		TextColor3 = theme.Text,
-		Position = UDim2.fromOffset(58, 15),
-		Size = UDim2.fromOffset(122, 14),
+		Position = UDim2.fromOffset(60, 13),
+		Size = UDim2.fromOffset(122, 15),
 		Parent = card,
 	})
 	local supported
@@ -442,8 +491,8 @@ function KeySystem:Show(opts)
 		Text = supported == nil and "Universal" or supported and "Supported" or "Not in our list",
 		TextSize = 12,
 		TextColor3 = theme.Muted,
-		Position = UDim2.fromOffset(58, 32),
-		Size = UDim2.fromOffset(122, 13),
+		Position = UDim2.fromOffset(60, 31),
+		Size = UDim2.fromOffset(122, 14),
 		Parent = card,
 	})
 	task.spawn(function()
@@ -455,113 +504,158 @@ function KeySystem:Show(opts)
 		gameName.Text = name
 	end)
 
-	local function row(label, value, y, color)
-		text({
-			Text = label,
-			TextSize = 12,
-			TextColor3 = theme.Muted,
-			Position = UDim2.fromOffset(px, y),
-			Size = UDim2.fromOffset(90, 14),
-			Parent = panel,
-		})
-		return text({
-			Text = value,
-			TextSize = 12,
-			TextColor3 = color or theme.Text,
-			TextXAlignment = Enum.TextXAlignment.Right,
-			Position = UDim2.fromOffset(px + 92, y),
-			Size = UDim2.fromOffset(96, 14),
-			Parent = panel,
-		})
-	end
 	local executor = "Unknown"
 	pcall(function()
 		executor = (identifyexecutor or getexecutorname)() or executor
 	end)
-	row("Executor", executor, 118)
-	local status = row("Status", "Key required", 140, theme.Warning)
+	text({ Text = "Executor", TextSize = 12, TextColor3 = theme.Muted, Position = UDim2.fromOffset(px, 118), Size = UDim2.fromOffset(80, 14), Parent = panel })
+	text({
+		Text = executor,
+		TextSize = 12,
+		TextColor3 = theme.Text,
+		TextXAlignment = Enum.TextXAlignment.Right,
+		Position = UDim2.fromOffset(px + 80, 118),
+		Size = UDim2.fromOffset(pw - 80, 14),
+		Parent = panel,
+	})
+	text({ Text = "Status", TextSize = 12, TextColor3 = theme.Muted, Position = UDim2.fromOffset(px, 144), Size = UDim2.fromOffset(80, 14), Parent = panel })
+
+	-- status pill: dot + label on a tinted rounded chip
+	local pill = new("Frame", {
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.fromOffset(px + pw, 151),
+		Size = UDim2.fromOffset(0, 22),
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundTransparency = 0.86,
+		Parent = panel,
+	}, {
+		corner(11),
+		new("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 9) }),
+		new("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			Padding = UDim.new(0, 6),
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		}),
+	})
+	local dot = new("Frame", { Size = UDim2.fromOffset(6, 6), Parent = pill }, { corner(3) })
+	local statusText = text({
+		Text = "",
+		FontFace = Fonts.Bold,
+		TextSize = 12,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.fromOffset(0, 14),
+		LayoutOrder = 1,
+		Parent = pill,
+	})
+	statusText.TextTruncate = Enum.TextTruncate.None
+	local function setStatus(label, color)
+		statusText.Text = label
+		tween(statusText, 0.2, { TextColor3 = color })
+		tween(dot, 0.2, { BackgroundColor3 = color })
+		tween(pill, 0.2, { BackgroundColor3 = color })
+	end
+	statusText.TextColor3, dot.BackgroundColor3, pill.BackgroundColor3 = theme.Warning, theme.Warning, theme.Warning
+	statusText.Text = "Key required"
 
 	new("Frame", {
 		BackgroundColor3 = theme.Stroke,
 		BorderSizePixel = 0,
-		Position = UDim2.fromOffset(px, 168),
-		Size = UDim2.fromOffset(188, 1),
+		Position = UDim2.fromOffset(px, 176),
+		Size = UDim2.fromOffset(pw, 1),
 		Parent = panel,
 	})
 
-	local function link(iconName, title, sub, y, url)
+	local function link(iconName, title, sub, y)
 		local s = stroke(theme.Stroke)
 		local b = new("TextButton", {
 			AutoButtonColor = false,
 			Text = "",
 			BackgroundColor3 = theme.Surface2,
 			Position = UDim2.fromOffset(px, y),
-			Size = UDim2.fromOffset(188, 48),
+			Size = UDim2.fromOffset(pw, 50),
 			Parent = panel,
 		}, { corner(10), s })
-		iconImage(iconName, theme.Accent, 16, UDim2.fromOffset(14, 16)).Parent = b
+		iconImage(iconName, theme.Accent, 16, UDim2.fromOffset(14, 17)).Parent = b
 		text({
 			Text = title,
 			FontFace = Fonts.Bold,
 			TextSize = 13,
 			TextColor3 = theme.Text,
-			Position = UDim2.fromOffset(42, 9),
-			Size = UDim2.fromOffset(136, 15),
+			Position = UDim2.fromOffset(42, 10),
+			Size = UDim2.fromOffset(pw - 72, 15),
 			Parent = b,
 		})
 		text({
 			Text = sub,
 			TextSize = 12,
 			TextColor3 = theme.Muted,
-			Position = UDim2.fromOffset(42, 25),
-			Size = UDim2.fromOffset(136, 14),
+			Position = UDim2.fromOffset(42, 26),
+			Size = UDim2.fromOffset(pw - 72, 14),
 			Parent = b,
 		})
+		local arrow = iconImage("arrow-up-right", theme.Muted, 14, UDim2.fromOffset(pw - 28, 18))
+		arrow.Parent = b
 		b.MouseEnter:Connect(function()
 			tween(b, 0.15, { BackgroundColor3 = theme.Surface3 })
 			tween(s, 0.15, { Color = theme.StrokeHover })
+			tween(arrow, 0.15, { ImageColor3 = theme.Text, Position = UDim2.fromOffset(pw - 26, 16) })
 		end)
 		b.MouseLeave:Connect(function()
 			tween(b, 0.15, { BackgroundColor3 = theme.Surface2 })
 			tween(s, 0.15, { Color = theme.Stroke })
+			tween(arrow, 0.15, { ImageColor3 = theme.Muted, Position = UDim2.fromOffset(pw - 28, 18) })
 		end)
 		return b
 	end
 
 	local flashId = 0
-	local function say(msg, color)
+	local kinds = {
+		info = { "info", theme.Muted },
+		ok = { "circle-check", theme.Success },
+		warn = { "circle-alert", theme.Warning },
+		error = { "circle-x", theme.Error },
+		copied = { "copy", theme.Accent },
+	}
+	local function say(msg, kind)
 		flashId += 1
 		local id = flashId
-		message.Text = msg
-		message.TextColor3 = color or theme.Muted
-		message.TextTransparency = 1
-		tween(message, 0.2, { TextTransparency = 0 })
+		local k = kinds[kind] or kinds.info
+		local img, offset, rect = icon(k[1])
+		messageIcon.Image, messageIcon.ImageRectOffset, messageIcon.ImageRectSize = img or "", offset or Vector2.zero, rect or Vector2.zero
+		messageIcon.ImageColor3, messageText.TextColor3 = k[2], k[2]
+		messageText.Text = msg
+		message.Position = UDim2.fromOffset(28, 236)
+		messageText.TextTransparency, messageIcon.ImageTransparency = 1, 1
+		tween(message, 0.25, { Position = UDim2.fromOffset(28, 230) })
+		tween(messageText, 0.25, { TextTransparency = 0 })
+		tween(messageIcon, 0.25, { ImageTransparency = 0 })
 		task.delay(4, function()
 			if id == flashId then
-				tween(message, 0.3, { TextTransparency = 1 })
+				tween(messageText, 0.3, { TextTransparency = 1 })
+				tween(messageIcon, 0.3, { ImageTransparency = 1 })
 			end
 		end)
 	end
 
 	local function copied(what, value)
 		if copy(value) then
-			say(what .. " copied to clipboard", theme.Accent)
+			say(what .. " copied", "copied")
 		else
-			say(value or "", theme.Muted)
+			say(value or "", "info")
 		end
 	end
 
-	local y = 182
-	local discord, website = opts.Discord, opts.Website
-	if discord then
-		link("message-circle", "Discord", discord, y, opts.DiscordLink).MouseButton1Click:Connect(function()
-			copied("Discord invite", opts.DiscordLink or "https://" .. discord)
+	local y = 190
+	if opts.Discord then
+		link("message-circle", "Discord", opts.Discord, y).MouseButton1Click:Connect(function()
+			copied("Discord invite", opts.DiscordLink or "https://" .. opts.Discord)
 		end)
-		y += 56
+		y += 58
 	end
-	if website then
-		link("globe", "Website", website, y, opts.WebsiteLink).MouseButton1Click:Connect(function()
-			copied("Website link", opts.WebsiteLink or "https://" .. website)
+	if opts.Website then
+		link("globe", "Website", opts.Website, y).MouseButton1Click:Connect(function()
+			copied("Website link", opts.WebsiteLink or "https://" .. opts.Website)
 		end)
 	end
 
@@ -573,9 +667,41 @@ function KeySystem:Show(opts)
 		if url then
 			copied("Key link", url)
 		else
-			say("No key link set", theme.Error)
+			say("No key link set", "error")
 		end
 	end)
+
+	local function shake()
+		task.spawn(function()
+			for _, dx in ipairs({ 7, -6, 4, -2, 0 }) do
+				tween(field, 0.05, { Position = UDim2.fromOffset(28 + dx, 118) }).Completed:Wait()
+			end
+		end)
+		tween(fieldStroke, 0.15, { Color = theme.Error, Transparency = 0.3 })
+		task.delay(0.8, function()
+			if not box:IsFocused() then
+				tween(fieldStroke, 0.3, { Color = theme.Stroke, Transparency = 0 })
+			end
+		end)
+	end
+
+	-- spinner on the submit icon while a check runs
+	local spin
+	local function loading(on)
+		local img, offset, rect = icon(on and "loader-circle" or "arrow-right")
+		submitIcon.Image, submitIcon.ImageRectOffset, submitIcon.ImageRectSize = img or "", offset or Vector2.zero, rect or Vector2.zero
+		submitText.Text = on and "Checking" or "Submit"
+		if spin then
+			spin:Disconnect()
+			spin = nil
+		end
+		submitIcon.Rotation = 0
+		if on then
+			spin = RunService.RenderStepped:Connect(function(dt)
+				submitIcon.Rotation = (submitIcon.Rotation + dt * 360) % 360
+			end)
+		end
+	end
 
 	local busy = false
 	local function close()
@@ -591,28 +717,29 @@ function KeySystem:Show(opts)
 		end
 		local key = box.Text:gsub("^%s+", ""):gsub("%s+$", "")
 		if key == "" then
-			say("Paste a key first", theme.Warning)
+			say("Paste a key first", "warn")
+			shake()
 			return
 		end
 		busy = true
-		status.Text = "Checking"
-		status.TextColor3 = theme.Muted
+		loading(true)
+		setStatus("Checking", theme.Muted)
 		local ok, msg = validate(opts, key)
+		loading(false)
 		if ok then
-			status.Text = "Key valid"
-			status.TextColor3 = theme.Success
-			say(msg or "Key accepted, loading", theme.Success)
+			setStatus("Key valid", theme.Success)
+			say(msg or "Key accepted, loading", "ok")
 			if saving then
 				save(folder, path, key)
 			end
 			result = key
-			task.wait(0.7)
+			task.wait(0.8)
 			close()
 			done:Fire()
 		else
-			status.Text = "Key required"
-			status.TextColor3 = theme.Warning
-			say(msg or "That key is not valid", theme.Error)
+			setStatus("Key required", theme.Warning)
+			say(msg or "That key is not valid", "error")
+			shake()
 			busy = false
 		end
 	end
@@ -625,7 +752,7 @@ function KeySystem:Show(opts)
 
 	gui.Parent = parent()
 	tween(scale, 0.35, { Scale = 1 })
-	tween(shadow, 0.35, { ImageTransparency = 0.6 })
+	tween(shadow, 0.35, { ImageTransparency = 0.55 })
 	tween(body, 0.35, { GroupTransparency = 0 })
 
 	done.Event:Wait()
