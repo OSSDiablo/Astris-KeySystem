@@ -1,5 +1,5 @@
 -- Oblivion Hub Key System
--- local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/Astris-KeySystem/main/Source.luau"))()
+-- local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/OblivionHub-KeySystem/main/Source.luau"))()
 -- local key = KeySystem:Show({ ... }) -- yields until a valid key is entered
 
 local Players = game:GetService("Players")
@@ -30,10 +30,10 @@ end
 
 -- same presets as Oblivion Hub UI Library
 KeySystem.Themes = {
-	Default = base(rgb(235, 64, 72), rgb(30, 6, 8)),
+	Default = base(rgb(150, 214, 110), rgb(14, 26, 8)),
 	Mono = base(rgb(232, 234, 233), rgb(14, 15, 15)),
 	Midnight = base(rgb(107, 184, 255), rgb(6, 18, 32)),
-	Moss = base(rgb(150, 214, 110), rgb(14, 26, 8)),
+	Crimson = base(rgb(235, 64, 72), rgb(30, 6, 8)),
 	Ember = base(rgb(255, 178, 26), rgb(30, 18, 0)),
 	Rose = base(rgb(255, 120, 150), rgb(32, 8, 14)),
 }
@@ -308,7 +308,7 @@ function KeySystem:Show(opts)
 		Parent = tile,
 	})
 	text({
-		Text = opts.Title or "Oblivion Hub",
+		Text = opts.Title or "Oblivion",
 		FontFace = Fonts.Bold,
 		TextSize = 20,
 		TextColor3 = theme.Text,

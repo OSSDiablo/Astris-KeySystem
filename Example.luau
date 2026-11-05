@@ -1,9 +1,9 @@
-local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/Astris-KeySystem/main/Source.luau"))()
+local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/OblivionHub-KeySystem/main/Source.luau"))()
 
 local key = KeySystem:Show({
-    Title = "Oblivion Hub",
+    Title = "Oblivion",
     Subtitle = "Key system",
-    Theme = "Default", -- or "Midnight", "Moss", "Ember", "Rose", "Mono", or a table of colours
+    Theme = "Default", -- or "Midnight", "Crimson", "Ember", "Rose", "Mono", or a table of colours
 
     Discord = "dsc.gg/oblivionhub", -- text on the card, clicking copies DiscordLink
     DiscordLink = "https://dsc.gg/oblivionhub",

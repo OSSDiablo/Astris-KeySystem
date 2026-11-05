@@ -5,7 +5,7 @@
 ## 1. Load it
 
 ```lua
-local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/Astris-KeySystem/main/Source.luau"))()
+local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/OblivionHub-KeySystem/main/Source.luau"))()
 ```
 
 ## 2. Show it
@@ -14,7 +14,7 @@ local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSS
 
 ```lua
 local key = KeySystem:Show({
-    Title = "Oblivion Hub",
+    Title = "Oblivion",
     Subtitle = "Key system",
     KeyLink = "https://oblivion.menu/key",
     Check = function(Key)
@@ -44,10 +44,10 @@ Keys = { "KEY-ONE", "KEY-TWO" },
 
 | Option | Default | What it does |
 | --- | --- | --- |
-| `Title` | `"Oblivion Hub"` | Big name at the top |
+| `Title` | `"Oblivion"` | Big name at the top |
 | `Subtitle` | `"Key system"` | Small line under the name |
 | `Logo` | Oblivion logo | Any image id |
-| `Theme` | `"Default"` | `Default`, `Midnight`, `Moss`, `Ember`, `Rose`, `Mono`, or a table of colours |
+| `Theme` | `"Default"` | `Default`, `Midnight`, `Crimson`, `Ember`, `Rose`, `Mono`, or a table of colours |
 | `Check` | | Function that gets the key and returns `true` or `false` |
 | `Keys` | | List of good keys, used when there is no `Check` |
 | `KeyLink` | | Copied when the player presses **Get a key** (a string or a function) |

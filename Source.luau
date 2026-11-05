@@ -5,10 +5,10 @@ local RunService=game:GetService('RunService')local KeySystem={}local rgb=Color3
 =rgb(16,17,20),Surface2=rgb(21,23,26),Surface3=rgb(33,36,41),Stroke=rgb(34,37,42
 ),StrokeHover=rgb(58,63,70),Text=rgb(236,238,241),Muted=rgb(138,144,153),Accent=
 accent,AccentDark=dark,Warning=rgb(244,184,96),Success=rgb(95,211,141),Error=
-rgb(255,107,107)}end KeySystem.Themes={Default=base(rgb(235,64,72),rgb(30,6,8)),
-Mono=base(rgb(232,234,233),rgb(14,15,15)),Midnight=base(rgb(107,184,255),rgb(6,
-18,32)),Moss=base(rgb(150,214,110),rgb(14,26,8)),Ember=base(rgb(255,178,26),rgb(
-30,18,0)),Rose=base(rgb(255,120,150),rgb(32,8,14))}local FONT=
+rgb(255,107,107)}end KeySystem.Themes={Default=base(rgb(150,214,110),rgb(14,26,8
+)),Mono=base(rgb(232,234,233),rgb(14,15,15)),Midnight=base(rgb(107,184,255),rgb(
+6,18,32)),Crimson=base(rgb(235,64,72),rgb(30,6,8)),Ember=base(rgb(255,178,26),
+rgb(30,18,0)),Rose=base(rgb(255,120,150),rgb(32,8,14))}local FONT=
 'rbxasset://fonts/families/BuilderSans.json'local Fonts={Regular=Font.new(FONT,
 Enum.FontWeight.Regular),Medium=Font.new(FONT,Enum.FontWeight.Medium),Bold=Font.
 new(FONT,Enum.FontWeight.SemiBold)}local SHADOW='rbxassetid://6014261993'
@@ -87,9 +87,9 @@ Size=UDim2.fromOffset(40,40),Parent=body},{corner(10),stroke(theme.Stroke)})new(
 'ImageLabel',{BackgroundTransparency=1,Image=opts.Logo or logo()or'',ScaleType=
 Enum.ScaleType.Fit,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.fromScale(0.5
 ,0.5),Size=UDim2.fromOffset(24,24),Parent=tile})text({Text=opts.Title or
-'Oblivion Hub',FontFace=Fonts.Bold,TextSize=20,TextColor3=theme.Text,Position=
-UDim2.fromOffset(80,29),Size=UDim2.fromOffset(240,20),Parent=body})text({Text=
-opts.Subtitle or'Key system',TextSize=13,TextColor3=theme.Muted,Position=UDim2.
+'Oblivion',FontFace=Fonts.Bold,TextSize=20,TextColor3=theme.Text,Position=UDim2.
+fromOffset(80,29),Size=UDim2.fromOffset(240,20),Parent=body})text({Text=opts.
+Subtitle or'Key system',TextSize=13,TextColor3=theme.Muted,Position=UDim2.
 fromOffset(80,50),Size=UDim2.fromOffset(240,15),Parent=body})text({Text=
 'License key',TextSize=12,TextColor3=theme.Muted,Position=UDim2.fromOffset(28,98
 ),Size=UDim2.fromOffset(200,14),Parent=body})local fieldStroke=stroke(theme.
