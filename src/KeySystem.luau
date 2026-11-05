@@ -1,4 +1,4 @@
--- Astris Key System
+-- Oblivion Hub Key System
 -- local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSSDiablo/Astris-KeySystem/main/Source.luau"))()
 -- local key = KeySystem:Show({ ... }) -- yields until a valid key is entered
 
@@ -28,9 +28,9 @@ local function base(accent, dark)
 	}
 end
 
--- same presets as Astris UI
+-- same presets as Oblivion Hub UI Library
 KeySystem.Themes = {
-	Default = base(rgb(62, 196, 130), rgb(5, 24, 14)),
+	Default = base(rgb(235, 64, 72), rgb(30, 6, 8)),
 	Mono = base(rgb(232, 234, 233), rgb(14, 15, 15)),
 	Midnight = base(rgb(107, 184, 255), rgb(6, 18, 32)),
 	Moss = base(rgb(150, 214, 110), rgb(14, 26, 8)),
@@ -70,8 +70,8 @@ local function bake(data, path)
 				out[#out + 1] = string.char(v // 65536, v // 256 % 256, v % 256)
 			end
 		end
-		if isfolder and makefolder and not isfolder("AstrisUI") then
-			makefolder("AstrisUI")
+		if isfolder and makefolder and not isfolder("OblivionUI") then
+			makefolder("OblivionUI")
 		end
 		if not (isfile and isfile(path)) then
 			writefile(path, table.concat(out))
@@ -82,13 +82,13 @@ local function bake(data, path)
 end
 
 local function logo()
-	return bake("@@LOGO@@", "AstrisUI/logo_@@LOGOVER@@.png")
+	return bake("@@LOGO@@", "OblivionUI/logo_@@LOGOVER@@.png")
 end
 
 -- soft shadow around a radius 14 rounded rect, so it follows the window corners
 local shadowSlice = Rect.new(49, 49, 450, 450)
 do
-	local id = bake("@@SHADOW@@", "AstrisUI/shadow_@@SHADOWVER@@.png")
+	local id = bake("@@SHADOW@@", "OblivionUI/shadow_@@SHADOWVER@@.png")
 	if id then
 		SHADOW, shadowSlice = id, Rect.new(60, 60, 140, 140)
 	end
@@ -238,7 +238,7 @@ function KeySystem:Show(opts)
 		end
 	end
 
-	local folder = opts.Folder or "AstrisKey"
+	local folder = opts.Folder or "OblivionKey"
 	local path = folder .. "/" .. (opts.FileName or "key") .. ".txt"
 	local saving = opts.SaveKey ~= false
 
@@ -256,7 +256,7 @@ function KeySystem:Show(opts)
 	local result
 
 	local gui = new("ScreenGui", {
-		Name = "AstrisKey",
+		Name = "OblivionKey",
 		ResetOnSpawn = false,
 		IgnoreGuiInset = true,
 		DisplayOrder = 1000,
@@ -308,7 +308,7 @@ function KeySystem:Show(opts)
 		Parent = tile,
 	})
 	text({
-		Text = opts.Title or "Astris",
+		Text = opts.Title or "Oblivion Hub",
 		FontFace = Fonts.Bold,
 		TextSize = 20,
 		TextColor3 = theme.Text,
@@ -778,7 +778,7 @@ end
 -- forget the saved key, so the window shows again next time
 function KeySystem:Reset(opts)
 	opts = opts or {}
-	pcall(delfile, (opts.Folder or "AstrisKey") .. "/" .. (opts.FileName or "key") .. ".txt")
+	pcall(delfile, (opts.Folder or "OblivionKey") .. "/" .. (opts.FileName or "key") .. ".txt")
 end
 
 return KeySystem

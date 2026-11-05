@@ -1,6 +1,6 @@
 <p align="center"><img src="assets/logo.png" width="72"></p>
-<h1 align="center">Astris Key System</h1>
-<p align="center">A clean key window for Roblox scripts, styled like Astris UI.</p>
+<h1 align="center">Oblivion Hub Key System</h1>
+<p align="center">A clean key window for Roblox scripts, styled like Oblivion Hub UI Library.</p>
 
 ## 1. Load it
 
@@ -14,11 +14,11 @@ local KeySystem = loadstring(game:HttpGet("https://raw.githubusercontent.com/OSS
 
 ```lua
 local key = KeySystem:Show({
-    Title = "Astris",
+    Title = "Oblivion Hub",
     Subtitle = "Key system",
-    KeyLink = "https://astris.gg/key",
+    KeyLink = "https://oblivion.menu/key",
     Check = function(Key)
-        return Key == "ASTRIS-DEMO"
+        return Key == "OBLIVION-DEMO"
     end,
 })
 
@@ -44,9 +44,9 @@ Keys = { "KEY-ONE", "KEY-TWO" },
 
 | Option | Default | What it does |
 | --- | --- | --- |
-| `Title` | `"Astris"` | Big name at the top |
+| `Title` | `"Oblivion Hub"` | Big name at the top |
 | `Subtitle` | `"Key system"` | Small line under the name |
-| `Logo` | Astris logo | Any image id |
+| `Logo` | Oblivion logo | Any image id |
 | `Theme` | `"Default"` | `Default`, `Midnight`, `Moss`, `Ember`, `Rose`, `Mono`, or a table of colours |
 | `Check` | | Function that gets the key and returns `true` or `false` |
 | `Keys` | | List of good keys, used when there is no `Check` |
@@ -56,7 +56,7 @@ Keys = { "KEY-ONE", "KEY-TWO" },
 | `Games` | | `{ [PlaceId] = "Name" }`. Shows *Supported* or *Not in our list*. Leave out for *Universal* |
 | `Placeholder` | `"Paste your key here"` | Text inside the empty key box |
 | `SaveKey` | `true` | Remember a good key so it is entered once |
-| `Folder` / `FileName` | `"AstrisKey"` / `"key"` | Where the key is saved |
+| `Folder` / `FileName` | `"OblivionKey"` / `"key"` | Where the key is saved |
 | `OnSuccess` | | Runs with the key once it is accepted |
 
 ## Functions
